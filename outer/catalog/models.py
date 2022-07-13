@@ -12,7 +12,7 @@ class Language(models.Model):
 
 
 class Author(models.Model):
-    'attrs'
+    '''attrs'''
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
