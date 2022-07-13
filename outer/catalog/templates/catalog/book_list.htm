@@ -1,0 +1,20 @@
+{% extends "catalog/base.htm" %}
+
+{% block content %}
+  <h1>Book List</h1>
+  {% if book_list %}
+  <ul>
+    {% for book in book_list %}
+      <li>
+        <a href="{% url 'catalog:book-detail' book.pk %}">{{ book.title }}</a> ({{book.author}})
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no books in the library.</p>
+  {% endif %}
+  {% load static %}
+  <img src="{% static '/catalog/images/anniehall.gif' %}" alt="">
+  <br>
+  {{ today }}
+{% endblock %}

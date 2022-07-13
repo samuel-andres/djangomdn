@@ -56,6 +56,10 @@ class Book(models.Model):
     def get_absolute_url(self):
         """Returns the URL to access a detail record for this book."""
         return reverse('book-detail', args=[str(self.id)])
+    def display_genre(self):
+        ''' create a string for the genre, used in admin.py'''
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+    display_genre.short_description = 'Genre'
 
 
 
