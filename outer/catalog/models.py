@@ -47,6 +47,7 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, help_text='Select a genre for this book')
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(null=False, blank=False, unique=True)
+    cover = models.ImageField(upload_to='covers/', null=True)
 
     '''metadata'''
     class Meta:

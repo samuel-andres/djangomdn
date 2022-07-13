@@ -14,21 +14,22 @@
     	<p>There are no books in the library.</p>
   	{% endif %}
   	{% load static %}
-  	<img src="{% static '/catalog/images/anniehall.gif' %}" alt="">
+  	<img src="{% static '/catalog/images/anniehall.gif' %}" alt="" class="imgradius">
   	<br>
   	{{ today }}  
+	<br><br>
 {% endblock %}
 
 
 {% block rightbar %}
 	<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
 	{% if page_obj.has_previous %}
-	<a href="?page=1">First page</a> <br>
+	<!-- <a href="?page=1">First page</a> <br> -->
 	<a href="?page={{ page_obj.previous_page_number }}">Previous page</a> <br>
 	<hr>
 	{% endif %}
 	{% if page_obj.has_next %}
-	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <br>
-	<a href="?page={{ page_obj.paginator.num_pages }}">Last page</a>
+	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <hr>
+	<!-- <a href="?page={{ page_obj.paginator.num_pages }}">Last page</a> -->
 	{% endif %}
 {% endblock %}

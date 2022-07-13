@@ -7,14 +7,12 @@
     <p><strong>by:</strong> <a href="">{{ book.author }}</a>
     </p> <!-- author detail link not yet defined -->
     <hr>
-    <img src="{% static '/catalog/images/mrmercedes.jpg' %}" alt="" class="mercedes">
+    <img src="{{ book.cover.url }}" class="mercedes">
     <p align="justify">{{ book.summary }}</p>
     <p><strong>First published in:</strong> {{ book.pubdate }}</p>
     <p><strong>ISBN:</strong> {{ book.isbn }}</p>
     <p><strong>Language:</strong> {{ book.language }}</p>
     <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
-
-    
 
 
     <div style="margin-top:50px">

@@ -4,6 +4,7 @@
 {% block content %}
   <h1>Local Library Home</h1>
   <p>Welcome to LocalLibrary, a website developed following the <a href="https://developer.mozilla.org/en-US/">MozillaDN</a> guide!</p>
+  <hr>
   <h2>Dynamic content</h2>
   <p>The library has the following record counts:</p>
   <ul>
@@ -15,5 +16,7 @@
     <li><strong>Genres that starts with capital "H":</strong> {{ nogen_that_sw_caph }}</li>
   </ul>
   {% load static %}
-  <img src="{% static '/catalog/images/harrylib.webp' %}" alt="" style="width:555px;">
+  <img src="{% static '/catalog/images/harrylib.webp' %}" alt="" class="imgradius">
+  <br>
+  <br>
 {% endblock %}

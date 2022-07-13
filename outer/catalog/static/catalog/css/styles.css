@@ -17,3 +17,8 @@
     padding: 1px;
     border: 1px solid rgb(0, 0, 0);
 }
+
+.imgradius {
+    border-radius: 5px;
+    width: 555px;
+}

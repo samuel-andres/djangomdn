@@ -55,3 +55,17 @@ docs/_build/
 
 # PyBuilder
 target/
+
+*/migrations
+outer/catalog/migrations/0005_book_cover.py
+outer/catalog/migrations/0006_alter_book_cover.py
+outer/catalog/migrations/0007_alter_book_cover.py
+outer/catalog/migrations/0008_alter_book_cover.py
+outer/catalog/migrations/0009_alter_book_cover.py
+outer/catalog/migrations/0010_alter_book_cover.py
+outer/catalog/migrations/0011_alter_book_cover.py
+outer/catalog/migrations/0012_alter_book_cover.py
+outer/catalog/migrations/0013_alter_book_cover.py
+outer/catalog/migrations/0014_alter_book_cover.py
+outer/catalog/migrations/0015_alter_book_cover.py
+outer/catalog/migrations/0016_alter_book_cover.py
