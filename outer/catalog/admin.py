@@ -10,7 +10,7 @@ class AuthorAdmin(admin.ModelAdmin):
     '''The fields attribute lists just those fields that are to be displayed on the form, in order. Fields are displayed vertically by default, but will display horizontally if you further group them in a tuple (as shown in the "date" fields above).'''
     '''list_display is for the general view, fields for the detail'''
     list_display = ('last_name', 'first_name', 'date_of_birth', 'date_of_death')
-    fields = ['first_name', 'last_name', ('date_of_birth', 'date_of_death')]
+    fields = ['first_name', 'last_name', ('date_of_birth', 'date_of_death'), 'authpic']
     inlines = [BooksInLine]
 
 

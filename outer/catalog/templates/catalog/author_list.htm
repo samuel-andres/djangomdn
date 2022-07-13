@@ -1,0 +1,36 @@
+{% extends "catalog/base.htm" %}
+
+{% block content %}
+	<h1>Author List</h1>
+    {% if author_list %}
+  		<ul>
+  		{% for author in author_list %}
+    		<li>
+        	<a href="{% url 'catalog:author-detail' author.id %}">{{ author }}</a> 
+      		</li>
+    	{% endfor %}
+  		</ul>
+  	{% else %}
+    	<p>There are no authors in the database.</p>
+  	{% endif %}
+  	{% load static %}
+  	<img src="{% static '/catalog/images/misery.webp' %}" alt="" class="imgradius">
+  	<br>
+  	{{ today }}  
+	<br><br>
+{% endblock %}
+
+
+{% block rightbar %}
+	{% if page_obj != Null %}
+	<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
+	{% elif page_obj.has_previous %}
+	<!-- <a href="?page=1">First page</a> <br> -->
+	<a href="?page={{ page_obj.previous_page_number }}">Previous page</a> <br>
+	<hr>
+	{% endif %}
+	{% if page_obj.has_next %}
+	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <hr>
+	<!-- <a href="?page={{ page_obj.paginator.num_pages }}">Last page</a> -->
+	{% endif %}
+{% endblock %}

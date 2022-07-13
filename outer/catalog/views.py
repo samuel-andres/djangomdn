@@ -51,6 +51,14 @@ class BookListView(generic.ListView):
         context['today'] = datetime.now()
         return context
 
+class AuthorListView(generic.ListView):
+    model = Author
+    template_name = 'catalog/author_list.htm'
+
+class AuthorDetailView(generic.DetailView):
+    model = Author
+    template_name = 'catalog/author_detail.htm'
+
 
 # class BookDetailView(View):
 #     def get(self, request, slug):

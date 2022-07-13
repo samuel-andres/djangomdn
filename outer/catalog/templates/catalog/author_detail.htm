@@ -1,0 +1,26 @@
+{% extends "catalog/base.htm" %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'catalog/css/styles.css' %}">
+
+    {% block content %}
+    <h1>{{ author }}</h1>
+    {% if author.date_of_death == Null %}
+    <p><strong>Born in:</strong> {{ author.date_of_birth }}</p>
+    <hr>
+    {% else %}
+    <p><strong>{{ author.date_of_birth}} - {{ author.date_of_death }}</strong></p>
+    <hr>
+    {% endif %}
+    <img src="{{ author.authpic.url }}" class="mercedes">
+    <p>Actually, we count with {{ author.book_set.all.count }} of his books:</p>
+    <!-- <ul> -->
+    {% for book in author.book_set.all %}
+    <!-- <li> -->
+        <a href="{% url 'catalog:book-detail' book.slug %}">{{ book }}</a>
+        {{ book.summary }} <br>
+    <!-- </li> -->
+
+    {% endfor %}
+    <!-- </ul> -->
+    <br><br>
+    {% endblock %}
