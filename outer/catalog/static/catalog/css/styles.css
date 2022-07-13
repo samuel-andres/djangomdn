@@ -8,3 +8,12 @@
     padding: 0;
     list-style: none;
 }
+
+.mercedes {
+    width: auto;
+    height: 300px;
+    float: right;
+    margin-left: 20px;
+    padding: 1px;
+    border: 1px solid rgb(0, 0, 0);
+}

@@ -1,20 +1,34 @@
 {% extends "catalog/base.htm" %}
 
 {% block content %}
-  <h1>Book List</h1>
-  {% if book_list %}
-  <ul>
-    {% for book in book_list %}
-      <li>
-        <a href="{% url 'catalog:book-detail' book.pk %}">{{ book.title }}</a> ({{book.author}})
-      </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-    <p>There are no books in the library.</p>
-  {% endif %}
-  {% load static %}
-  <img src="{% static '/catalog/images/anniehall.gif' %}" alt="">
-  <br>
-  {{ today }}
+	<h1>Book List</h1>
+    {% if book_list %}
+  		<ul>
+  		{% for book in book_list %}
+    		<li>
+        	<a href="{% url 'catalog:book-detail' book.slug %}">{{ book.title }}</a> ({{book.author}})
+      		</li>
+    	{% endfor %}
+  		</ul>
+  	{% else %}
+    	<p>There are no books in the library.</p>
+  	{% endif %}
+  	{% load static %}
+  	<img src="{% static '/catalog/images/anniehall.gif' %}" alt="">
+  	<br>
+  	{{ today }}  
+{% endblock %}
+
+
+{% block rightbar %}
+	<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
+	{% if page_obj.has_previous %}
+	<a href="?page=1">First page</a> <br>
+	<a href="?page={{ page_obj.previous_page_number }}">Previous page</a> <br>
+	<hr>
+	{% endif %}
+	{% if page_obj.has_next %}
+	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <br>
+	<a href="?page={{ page_obj.paginator.num_pages }}">Last page</a>
+	{% endif %}
 {% endblock %}

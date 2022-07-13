@@ -1,1 +1,41 @@
-<p>funca?</p>
+{% extends "catalog/base.htm" %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'catalog/css/styles.css' %}">
+
+    {% block content %}
+    <h1>{{ book.title }}</h1>
+    <p><strong>by:</strong> <a href="">{{ book.author }}</a>
+    </p> <!-- author detail link not yet defined -->
+    <hr>
+    <img src="{% static '/catalog/images/mrmercedes.jpg' %}" alt="" class="mercedes">
+    <p align="justify">{{ book.summary }}</p>
+    <p><strong>First published in:</strong> {{ book.pubdate }}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Language:</strong> {{ book.language }}</p>
+    <p><strong>Genre:</strong> {{ book.genre.all|join:", " }}</p>
+
+    
+
+
+    <div style="margin-top:50px">
+        <h4>Copies</h4>
+        {% for copy in avaible_copies %}
+        <hr>
+        <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">
+            <strong>{{ copy.get_status_display }}</strong>
+        </p>
+        <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
+        <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
+        {% endfor %}
+
+        {% for copy in ordered_rest	%}
+        <hr>
+        <p class="{% if copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">
+            <strong>{{ copy.get_status_display }}</strong>
+        </p>
+        <p><strong>Due to be returned:</strong> {{ copy.due_back }}</p>
+        <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
+        <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
+        {% endfor %}
+    </div>
+    {% endblock %}

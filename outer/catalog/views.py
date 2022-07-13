@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import Http404, HttpResponseNotFound
+from django.shortcuts import get_object_or_404, render
 from django.views import View, generic
 from datetime import datetime
 
@@ -39,6 +40,7 @@ class BookListView(generic.ListView):
     model = Book
     template_name = 'catalog/book_list.htm'
     context_object_name = 'book_list'
+    paginate_by = 10
 
     queryset = Book.objects.all().order_by('author__name')
 
@@ -50,6 +52,28 @@ class BookListView(generic.ListView):
         return context
 
 
-class BookDetailView(generic.DetailView):
-    model = Book
-    template_name = 'catalog/book_detail.htm'
+# class BookDetailView(View):
+#     def get(self, request, slug):
+#         try:
+#             actual_book = Book.objects.get(slug__exact=slug)
+#             context = {
+#                 'title' : actual_book.title,
+#                 'summary': actual_book.summary,
+#             }
+#             return render(request, 'catalog/book_detail.htm', context)
+#         except: raise Http404('Book does not exist')
+
+
+class BookDetailView(View):
+    def get(self, request, slug):
+        actual_book = get_object_or_404(Book, slug=slug)
+        avaible_copies = actual_book.bookinstance_set.all().filter(status='a')
+        ordered_rest = actual_book.bookinstance_set.all().exclude(status='a').order_by('due_back')
+
+        context = {
+            'book' : actual_book,
+            'avaible_copies': avaible_copies,
+            'ordered_rest': ordered_rest,
+        }
+        return render(request, 'catalog/book_detail.htm', context)
+

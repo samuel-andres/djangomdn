@@ -1,6 +1,8 @@
 from typing import OrderedDict
 from django.db import models
 from django.urls import reverse
+from django.db.models.signals import pre_save
+from django.utils.text import slugify
 import uuid
 
 class Language(models.Model):
@@ -33,7 +35,6 @@ class Genre(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
 class Book(models.Model):
     '''attrs'''
     title = models.CharField(max_length=200)
@@ -45,6 +46,7 @@ class Book(models.Model):
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True)    
     genre = models.ManyToManyField(Genre, help_text='Select a genre for this book')
     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
+    slug = models.SlugField(null=False, blank=False, unique=True)
 
     '''metadata'''
     class Meta:
@@ -61,7 +63,12 @@ class Book(models.Model):
         return ', '.join(genre.name for genre in self.genre.all()[:3])
     display_genre.short_description = 'Genre'
 
+def set_slug(sender, instance, *args, **kwargs):
+    if instance.slug:
+        return
+    instance.slug = slugify(instance.title+'-'+instance.author.first_name+instance.author.last_name)
 
+pre_save.connect(set_slug, sender=Book)
 
 class BookInstance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular book across whole library')
@@ -70,7 +77,7 @@ class BookInstance(models.Model):
     LOAN_STATUS = (
         ('m', 'Maintenance'),
         ('o', 'On loan'),
-        ('a', 'Avaible'),
+        ('a', 'Available'),
         ('r', 'Reserved'),
     )
     status = models.CharField(
@@ -82,11 +89,11 @@ class BookInstance(models.Model):
     )
 
     '''metadata'''
-    class Meta:
-        ordering = ['due_back']
+    # class Meta:
+    #     ordering = ('status','-due_back')
 
     '''punteros'''
-    book = models.ForeignKey(Book, on_delete=models.RESTRICT, related_name='get_copies', null=True)
+    book = models.ForeignKey(Book, on_delete=models.RESTRICT, null=True)
 
     '''methods'''
     def __str__(self) -> str:
