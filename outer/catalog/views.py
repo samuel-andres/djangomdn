@@ -1,7 +1,10 @@
+import re
 from django.http import Http404, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.views import View, generic
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -24,13 +27,18 @@ class IndexView(View):
         nobooks_cont_the = Book.objects.filter(title__icontains='the').count()
         nogen_that_sw_caph = Genre.objects.filter(name__startswith='H').count()
 
+        num_visits = request.session.get('num_visits', 0)
+        request.session['num_visits'] = num_visits + 1
+
+
         context = {
             'num_books': num_books,
             'num_instances': num_instances,
             'num_instances_available': num_instances_available,
             'num_authors': num_authors,
             'nobooks_cont_the':nobooks_cont_the,
-            'nogen_that_sw_caph':nogen_that_sw_caph
+            'nogen_that_sw_caph':nogen_that_sw_caph,
+            'num_visits': num_visits + 1,
 
         }
 
@@ -55,9 +63,12 @@ class AuthorListView(generic.ListView):
     model = Author
     template_name = 'catalog/author_list.htm'
 
-class AuthorDetailView(generic.DetailView):
+# @login_required se usa para func based views
+class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
     model = Author
     template_name = 'catalog/author_detail.htm'
+    #loginmixin
+    login_url = 'login'
 
 
 # class BookDetailView(View):

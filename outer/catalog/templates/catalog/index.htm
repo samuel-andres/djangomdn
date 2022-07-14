@@ -15,6 +15,12 @@
     <!-- <li><strong>Books that contains "the":</strong> {{ nobooks_cont_the }}</li> -->
     <!-- <li><strong>Genres that starts with capital "H":</strong> {{ nogen_that_sw_caph }}</li> -->
   </ul>
+
+  {% if num_visits == 1 %}
+  <p>This is the first time you visit this page!</p>
+  {% else %}
+  <p>You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.</p>
+  {% endif %}
   {% load static %}
   <img src="{% static '/catalog/images/harrylib.webp' %}" alt="" class="imgradius">
   <br>

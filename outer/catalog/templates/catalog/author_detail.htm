@@ -17,7 +17,7 @@
     {% for book in author.book_set.all %}
     <!-- <li> -->
         <a href="{% url 'catalog:book-detail' book.slug %}">{{ book }}</a>
-        {{ book.summary }} <br>
+        <p align="justify">{{ book.summary }}</p> <br>
     <!-- </li> -->
 
     {% endfor %}

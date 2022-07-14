@@ -4,7 +4,7 @@
 
     {% block content %}
     <h1>{{ book.title }}</h1>
-    <p><strong>by:</strong> <a href="">{{ book.author }}</a>
+    <p><strong>by:</strong> <a href="{% url 'catalog:author-detail' book.author.id %}">{{ book.author }}</a>
     </p> <!-- author detail link not yet defined -->
     <hr>
     <img src="{{ book.cover.url }}" class="mercedes">
