@@ -37,3 +37,24 @@ a:hover,
 a:active {
     font-weight: bold;
 }
+
+.pader {
+    padding: 0%;
+}
+
+
+.confmail {
+    transition-duration: 0.4s;
+    background-color: white;
+    border: 2px solid black;
+    color: white;
+}
+  
+.confmail:hover {
+    background-color: #141414; 
+    color: white;
+}
+
+.errorlist {
+    list-style: none;
+}
