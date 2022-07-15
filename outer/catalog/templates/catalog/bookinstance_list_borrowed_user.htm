@@ -1,5 +1,5 @@
 {% extends "catalog/base.htm" %}
-
+{% load static %}
 {% block content %}
     <h1>Borrowed books</h1>
 
@@ -12,8 +12,12 @@
       </li>
       {% endfor %}
     </ul>
-
     {% else %}
       <p>There are no books borrowed.</p>
     {% endif %}
+{% endblock %}
+
+
+{% block rightbar %}
+<img src="{% static 'catalog/images/BIY.gif' %}" alt="">
 {% endblock %}

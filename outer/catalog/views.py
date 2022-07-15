@@ -1,13 +1,19 @@
-import re
-from django.http import Http404, HttpResponseNotFound
+'''python built in libs'''
+from datetime import *
+from multiprocessing import context
+
+''' net stuff'''
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.views import View, generic
-from datetime import datetime
+from django.urls import reverse
+
+''' auth stuff'''
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-# Create your views here.
-
+''' Views, forms and models'''
+from catalog.forms import RenewBookForm
+from django.views import View, generic
 from .models import Book, Author, BookInstance, Genre
 from django.contrib.auth.models import User
 
@@ -119,4 +125,47 @@ class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
     def get_queryset(self):
         return BookInstance.objects.filter(status__exact='o').order_by('due_back')
 
+
+class BookRenewView(PermissionRequiredMixin,View):
+    permission_required = (
+        'can_mark_returned',
+    )
+
+    form_class = RenewBookForm
+    template_name = 'catalog/book_renew.htm'
+    initial = {}
+
+
+    def get(self, request, pk):
+        proposed_renewal_date = date.today() + timedelta(weeks=3)
+        self.initial['renewal_date'] = proposed_renewal_date
+        form = self.form_class(initial=self.initial)
+
+        context = {
+            'form':form,
+            'book_instance': get_object_or_404(BookInstance, pk=pk),
+        }
+
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, pk):
+        # retrieve the book_instance
+        book_instance = get_object_or_404(BookInstance, pk=pk)
+        # retrieve the form with the data entered by the user
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # <process form cleaned data> and store it 
+            book_instance.due_back = form.cleaned_data['renewal_date']
+            book_instance.save()
+
+            return HttpResponseRedirect(reverse('catalog:all-borrowed'))
+
+        context = {
+            'form' : form,
+            'book_instance' : book_instance,   
+        }
+
+
+        return render(request, self.template_name, context)
 

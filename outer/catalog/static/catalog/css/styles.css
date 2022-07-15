@@ -76,3 +76,18 @@ th, td {
 .bookid {
     font-size: small;
 }
+
+.pugil {
+    max-width: 250px;
+    max-height: auto;
+}
+
+/* .center {
+    border: 5px solid #FFFF00;
+    text-align: center;
+} */
+
+.former {
+    color: red;
+    font-weight: bolder;
+}

@@ -12,6 +12,7 @@
                 <th scope="col">Expected return date</th>
                 <th scope="col">User</th>
                 <th scope="col">Copy ID</th>
+                <th scope="col">Renew</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,7 @@
                     <td><span class="{% if bookinst.is_overdue %}text-danger{% endif %}" style="{% if bookinst.is_overdue %}font-weight:bolder{% endif %}">{{ bookinst.due_back }}</span></td>
                     <td>{{ bookinst.borrower.last_name }}, {{ bookinst.borrower.first_name }} (@{{ bookinst.borrower }})</td>
                     <td><span class="bookid">{{ bookinst.id }}</span></td>
+                    <td><a href="{% url 'catalog:book-renew' bookinst.id %}">Renew</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -45,4 +47,6 @@
 	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <hr>
 	<!-- <a href="?page={{ page_obj.paginator.num_pages }}">Last page</a> -->
 	{% endif %}
+    {% load static %}
+    <img src="{% static 'catalog/images/pugil.gif' %}" alt="" class="pugil">
 {% endblock %}
