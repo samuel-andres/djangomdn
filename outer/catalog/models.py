@@ -3,6 +3,9 @@ from django.db import models
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
+from django.contrib.auth.models import User
+from datetime import date
+
 import uuid
 
 class Language(models.Model):
@@ -90,14 +93,27 @@ class BookInstance(models.Model):
     )
 
     '''metadata'''
-    # class Meta:
+    class Meta:
+        ''' the first attr on the permission is the name of the
+        actual permission, and the second is a little description'''
+        permissions = (
+            ('can_mark_returned', 'Set book as returned'),
+        )
     #     ordering = ('status','-due_back')
 
     '''punteros'''
     book = models.ForeignKey(Book, on_delete=models.RESTRICT, null=True)
-
-    '''methods'''
+    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    '''methods'''   
     def __str__(self) -> str:
         return f'{self.id} ({self.book.title})'
+
+    @property
+    def is_overdue(self):
+        """Determines if the book is overdue based on due date and current date."""
+        return bool(self.due_back and date.today() > self.due_back)
+
+
+    
 
 

@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View, generic
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 # Create your views here.
 
 from .models import Book, Author, BookInstance, Genre
+from django.contrib.auth.models import User
 
 class IndexView(View):
     def get(self, request):
@@ -95,4 +96,27 @@ class BookDetailView(View):
             'ordered_rest': ordered_rest,
         }
         return render(request, 'catalog/book_detail.htm', context)
+
+class LoanedBooksByUserListView(LoginRequiredMixin,generic.ListView):
+    """Generic class-based view listing books on loan to current user."""
+    model = BookInstance
+    template_name ='catalog/bookinstance_list_borrowed_user.htm'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
+
+
+class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
+    permission_required = (
+        'catalog.can_mark_returned',
+    )
+
+    model = BookInstance
+    template_name = 'catalog/all_borrowed_list_view.htm'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
+
 

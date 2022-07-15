@@ -1,0 +1,48 @@
+{% extends "catalog/base.htm" %}
+
+{% block content %}
+    <h1>All borrowed books</h1>
+    <div class="pagination">
+    {% if bookinstance_list %}
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Book</th>
+                <th scope="col">Expected return date</th>
+                <th scope="col">User</th>
+                <th scope="col">Copy ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bookinst in bookinstance_list %}
+                <tr>
+                    <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+                    <td><a href="{% url 'catalog:book-detail' bookinst.book.slug %}">{{bookinst.book.title}}</a></td>
+                    <td><span class="{% if bookinst.is_overdue %}text-danger{% endif %}" style="{% if bookinst.is_overdue %}font-weight:bolder{% endif %}">{{ bookinst.due_back }}</span></td>
+                    <td>{{ bookinst.borrower.last_name }}, {{ bookinst.borrower.first_name }} (@{{ bookinst.borrower }})</td>
+                    <td><span class="bookid">{{ bookinst.id }}</span></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+      <p>There are no books borrowed.</p>
+    {% endif %}
+</div>
+<br>
+{% endblock %}
+
+{% block rightbar %}
+	<p>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</p>
+	{% if page_obj.has_previous %}
+	<!-- <a href="?page=1">First page</a> <br> -->
+	<a href="?page={{ page_obj.previous_page_number }}">Previous page</a> <br>
+	<hr>
+	{% endif %}
+	{% if page_obj.has_next %}
+	<a href="?page={{ page_obj.next_page_number }}">Next page</a> <hr>
+	<!-- <a href="?page={{ page_obj.paginator.num_pages }}">Last page</a> -->
+	{% endif %}
+{% endblock %}

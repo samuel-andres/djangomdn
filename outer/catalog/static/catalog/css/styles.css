@@ -58,3 +58,21 @@ a:active {
 .errorlist {
     list-style: none;
 }
+
+.buldel {
+    list-style: none;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    /* padding-right: min(25px, 10%); */
+}
+
+
+.pagination {
+    display: flex;
+}
+
+.bookid {
+    font-size: small;
+}
