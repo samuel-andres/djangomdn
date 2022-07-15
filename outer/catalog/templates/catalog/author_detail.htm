@@ -11,7 +11,12 @@
     <p><strong>{{ author.date_of_birth}} - {{ author.date_of_death }}</strong></p>
     <hr>
     {% endif %}
+    {% if perms.catalog.can_crud_authors%}
+    <p>As you are a {{ user.groups.all.0|lower }}, you can <a href="{% url 'catalog:author-update' author.id %}">edit</a> or <a href="{% url 'catalog:author-delete' author.id %}">delete</a> this page.</p>
+    {% endif %}
+    {% if author.authpic %}
     <img src="{{ author.authpic.url }}" class="mercedes">
+    {% endif %}
     <p>Actually, we count with {{ author.book_set.all.count }} of his books:</p>
     <!-- <ul> -->
     {% for book in author.book_set.all %}

@@ -37,8 +37,11 @@
      	<!-- </ul> -->
     {% if perms.catalog.can_mark_returned %}
     <!-- <ul style="border-right: 1px solid rgb(212, 212, 212);"> -->
-     <li class="buldel"><strong>{{ user.groups.all.0 }}</strong></li> 
-     <li><a href="{% url 'catalog:all-borrowed' %}">All borrowed</a></li>
+      <li class="buldel"><strong>{{ user.groups.all.0 }}</strong></li> 
+      <li><a href="{% url 'catalog:all-borrowed' %}">All borrowed</a></li>
+      {% if perms.catalog.can_crud_authors%}
+      <li><a href="{% url 'catalog:author-create' %}">Upload author</a></li>
+      {% endif %}
     </ul>
     <!-- <hr> -->
     {% endif %}

@@ -25,13 +25,15 @@ class Author(models.Model):
     authpic = models.ImageField(upload_to='authpics/', null=True)
     '''metadata'''
     class Meta:
+        permissions = (
+            ('can_crud_authors', '#Create, Update and Delete authors'),
+        )
         ordering = ['last_name', 'first_name']
-
     '''methods'''
     def __str__(self) -> str:
         return f'{self.last_name}, {self.first_name}'
     def get_absolute_url(self):
-        return reverse('author-detail', args=[str(self.id)])
+        return reverse('catalog:author-detail', args=[str(self.id)])
 
 class Genre(models.Model):
     name = models.CharField(max_length=200, help_text='Enter a book genre (e.g. Science Fiction)')
@@ -114,6 +116,6 @@ class BookInstance(models.Model):
         return bool(self.due_back and date.today() > self.due_back)
 
 
-    
+
 
 

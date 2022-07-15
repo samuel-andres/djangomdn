@@ -1,11 +1,13 @@
 '''python built in libs'''
+from dataclasses import fields
 from datetime import *
 from multiprocessing import context
+from django.forms import ModelForm
 
 ''' net stuff'''
 from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 ''' auth stuff'''
 from django.contrib.auth.decorators import login_required
@@ -128,7 +130,7 @@ class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
 
 class BookRenewView(PermissionRequiredMixin,View):
     permission_required = (
-        'can_mark_returned',
+        'catalog.can_mark_returned',
     )
 
     form_class = RenewBookForm
@@ -169,3 +171,31 @@ class BookRenewView(PermissionRequiredMixin,View):
 
         return render(request, self.template_name, context)
 
+
+class AuthorCreate(PermissionRequiredMixin,generic.edit.CreateView):
+    permission_required = (
+        'catalog.can_crud_authors',
+    )
+    model = Author
+
+    fields = [
+        'first_name',
+        'last_name',
+        'date_of_birth',
+        'date_of_death',
+        'authpic',
+    ]
+
+    initial = {
+        'date_of_death': '11/06/2020'
+    }
+
+class AuthorUpdate(generic.edit.UpdateView):
+    model = Author
+    # using the __all__ is a bad practice
+    fields = '__all__'
+
+class AuthorDelete(generic.edit.DeleteView):
+    model = Author
+    success_url = reverse_lazy('catalog:author-list')
+    
