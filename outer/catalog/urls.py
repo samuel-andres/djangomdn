@@ -24,4 +24,6 @@ urlpatterns = [
     path('delete/book/<slug:slug>', views.BookDelete.as_view(), name='book-delete'),
     # forms.py VIEWS
     path('book/<uuid:pk>/renew/', views.BookRenewView.as_view(), name='book-renew'),
+    # sign up
+    path('signup/', views.SignUpView.as_view(), name='sign-up'),
 ]

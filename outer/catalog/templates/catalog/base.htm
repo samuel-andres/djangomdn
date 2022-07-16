@@ -74,8 +74,12 @@
 							{% else %}
 							<li>
 								<a href="{% url 'login'%}?next={{request.path}}"
-									>Login</a
+									>Sign in</a
 								>
+							</li>
+							<li>
+								<a href="{% url 'catalog:sign-up'%}"
+									>Sign up</a>
 							</li>
 							{% endif %}
 							<hr />

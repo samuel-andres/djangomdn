@@ -1,6 +1,7 @@
 ########################### IMPORTS ################################
 # python built in libs
 from datetime import *
+from re import template
 # net stuff
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404, render
@@ -14,6 +15,7 @@ from django.views import View, generic
 from .models import Book, Author, BookInstance, Genre, Language
 from catalog.forms import RenewBookForm, CreateBookForm
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 
 ########################### HOMEPAGE ################################
 
@@ -244,3 +246,12 @@ class BookRenewView(PermissionRequiredMixin, View):
         }
 
         return render(request, self.template_name, context)
+
+########################### custo auth VIEWS ################################
+############SIGN UP###########
+
+
+class SignUpView(generic.edit.CreateView):
+    template_name = 'catalog/signup.html'
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
