@@ -55,11 +55,18 @@
 							<hr />
 							{% if user.is_authenticated %}
 							<li class="buldel">
+								{% if user.userprofile %}
+								<a class="anchorprofile" href="{% url 'catalog:user-profile' user.userprofile.slug %}">@{{user.get_username}}</a>
+								{% else %}
 								<strong
 									><span style="color: rgb(5, 0, 46)">@</span
 									>{{ user.get_username }}</strong
 								>
+								{% endif %}
 							</li>
+							{% comment %} <li>
+								<a href="{% url 'catalog:update-profile' %}">Update</a>
+							</li> {% endcomment %}
 							<li>
 								<a href="{% url 'catalog:my-borrowed' %}"
 									>My Borrowed</a

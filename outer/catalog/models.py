@@ -1,4 +1,3 @@
-from typing import OrderedDict
 from django.db import models
 from django.urls import reverse
 from django.db.models.signals import pre_save
@@ -140,3 +139,54 @@ class BookInstance(models.Model):
     def is_overdue(self):
         """Determines if the book is overdue based on due date and current date."""
         return bool(self.due_back and date.today() > self.due_back)
+
+
+class UserProfile(models.Model):
+    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True)
+    phone = models.CharField(max_length=50, null=True, blank=True)
+    userpic = models.ImageField(
+        null=True,
+        blank=True,
+        upload_to='userpics/',
+        verbose_name='Profile Picture',
+    )
+    description = models.CharField(
+        max_length=1000,
+        help_text='Enter a brief description of you',
+        null=True,
+        blank=True,
+    )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    slug = models.SlugField(null=False, blank=False, unique=True)
+
+    def set_upslug(sender, instance, *args, **kwargs):
+        if instance.slug:
+            return
+        instance.slug = slugify(
+            instance.user.username)
+
+    def __str__(self) -> str:
+        return f'{self.last_name}, {self.first_name}'
+
+    def get_absolute_url(self):
+        return reverse('catalog:user-profile', args=[str(self.slug)])
+
+
+pre_save.connect(UserProfile.set_upslug, sender=UserProfile)
+
+
+class LibrarianGroupBasedPermission(models.Model):
+    class Meta:
+        permissions = (
+            ('is_librarian', 'This user is a Librarian'),
+        )
+
+
+class LibraryMemberGroupBasedPermission(models.Model):
+    class Meta:
+        permissions = (
+            ('is_library_member', 'This user is a Library Member'),
+        )

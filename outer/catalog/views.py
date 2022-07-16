@@ -12,8 +12,8 @@ from django.contrib.auth.decorators import login_required
 # Views, forms and models
 from django.views import View, generic
 
-from .models import Book, Author, BookInstance, Genre, Language
-from catalog.forms import RenewBookForm, CreateBookForm
+from .models import Book, Author, BookInstance, Genre, Language, UserProfile
+from catalog.forms import RenewBookForm, CreateBookForm, CreateProfileForm
 from django import forms
 
 
@@ -86,7 +86,8 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
 
 class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
     permission_required = (
-        'catalog.can_mark_returned',
+        # 'catalog.can_mark_returned',
+        'catalog.is_librarian',
     )
 
     model = BookInstance
@@ -107,7 +108,14 @@ class AuthorListView(generic.ListView):
 ############BOOK###########
 
 
-class BookDetailView(View):
+# class BookDetailView(View):
+
+class BookDetailView(PermissionRequiredMixin, View):
+    permission_required = (
+        'catalog.is_library_member',
+        # 'can_view_detailed_books',
+    )
+
     def get(self, request, slug):
         actual_book = get_object_or_404(Book, slug=slug)
         avaible_copies = actual_book.bookinstance_set.all().filter(status='a')
@@ -130,6 +138,19 @@ class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'catalog/author_detail.htm'
     # loginmixin
     login_url = 'login'
+###########USERPROFILE########
+
+
+class ProfileView(generic.DetailView):
+    model = UserProfile
+    template_name = 'catalog/profile.htm'
+
+
+class UpdateProfileView(generic.edit.UpdateView):
+    model = UserProfile
+    form_class = CreateProfileForm
+    template_name = 'catalog/userprofile_form.html'
+    # fields = '__all__'
 
 ########################### CUD VIEWS ################################
 ############AUTHOR###########
@@ -137,7 +158,8 @@ class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
 
 class AuthorCreate(PermissionRequiredMixin, generic.edit.CreateView):
     permission_required = (
-        'catalog.can_crud_authors',
+        # 'catalog.can_crud_authors',
+        'catalog.is_librarian',
     )
     model = Author
 
@@ -169,7 +191,8 @@ class AuthorDelete(generic.edit.DeleteView):
 
 class BookCreate(PermissionRequiredMixin, generic.edit.CreateView):
     permission_required = (
-        'catalog.can_crud_books',
+        # 'catalog.can_crud_books',
+        'catalog.is_librarian',
     )
 
     model = Book
@@ -185,7 +208,8 @@ class BookCreate(PermissionRequiredMixin, generic.edit.CreateView):
 
 class BookUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
     permission_required = (
-        'catalog.can_crud_books',
+        # 'catalog.can_crud_books',
+        'catalog.is_librarian',
     )
 
     model = Book
@@ -195,7 +219,8 @@ class BookUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
 
 class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
     permission_required = (
-        'catalog.can_crud_books',
+        # 'catalog.can_crud_books',
+        'catalog.is_librarian',
     )
 
     model = Book
@@ -209,7 +234,8 @@ class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
 
 class BookRenewView(PermissionRequiredMixin, View):
     permission_required = (
-        'catalog.can_mark_returned',
+        # 'catalog.can_mark_returned',
+        'catalog.is_librarian',
     )
 
     form_class = RenewBookForm

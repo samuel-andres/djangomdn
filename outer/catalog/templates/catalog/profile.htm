@@ -1,0 +1,27 @@
+{% extends "catalog/base.htm" %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'catalog/css/styles.css' %}">
+
+    {% block content %}
+    {% if userprofile.first_name == Null %}
+    <h1><a href="{% url 'catalog:update-profile' userprofile.slug %}">UPDATE YOUR PROFILE</a></h1>
+    {% else %}
+    <h1>{{ userprofile }}</h1>
+    <p>@{{ userprofile.user.username }}</p>
+    {% if userprofile.userpic %}
+    <img src="{{ userprofile.userpic.url }}" class="mercedes">
+    {% endif %}
+    <p>You can <a href="{% url 'catalog:update-profile' userprofile.slug %}">update</a> your profile if you want</p>
+    <h4>Description:</h4>
+    <p align="justify">{{ userprofile.description }}</p>
+
+    {% if userprofile.user.bookinstance_set.all %}
+    <h4>Actually reading:</h4>
+    <ul>
+    {% for bookinst in userprofile.user.bookinstance_set.all %}
+        <li><a href="{% url 'catalog:book-detail' bookinst.book.slug %}">{{ bookinst.book }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endif %}
+{% endblock %}

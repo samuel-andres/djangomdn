@@ -12,6 +12,8 @@ from accounts.forms import CreateUserForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from catalog.models import UserProfile
+
 # class SignUpView(generic.edit.CreateView):
 #     template_name = 'accounts/signup.html'
 #     form_class = CreateUserForm
@@ -28,7 +30,9 @@ class SignUpView(View):
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            form.save()
+            user = form.save()
+            userprofile = UserProfile(user=user)
+            userprofile.save()
             new_user = form.cleaned_data.get('username')
             messages.success(
                 request,
@@ -37,7 +41,6 @@ class SignUpView(View):
             return HttpResponseRedirect(reverse_lazy('login'))
 
         # form['email'] = request.POST['email']
-        print(form)
         context = {
             'form': form,
         }

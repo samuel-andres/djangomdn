@@ -1,7 +1,8 @@
+from dataclasses import fields
 import datetime
 
 from django import forms
-from catalog.models import Book
+from catalog.models import Book, UserProfile
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -41,4 +42,19 @@ class CreateBookForm(forms.ModelForm):
         ]
         widgets = {
             'summary': forms.Textarea(),
+        }
+
+
+class CreateProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'first_name',
+            'last_name',
+            'phone',
+            'description',
+            'userpic',
+        ]
+        widgets = {
+            'description': forms.Textarea(),
         }
