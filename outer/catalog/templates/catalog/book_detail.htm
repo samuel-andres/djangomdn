@@ -6,6 +6,9 @@
     <h1>{{ book.title }}</h1>
     <p><strong>by:</strong> <a href="{% url 'catalog:author-detail' book.author.id %}">{{ book.author }}</a>
     </p> <!-- author detail link not yet defined -->
+    {% if perms.catalog.can_crud_books%}
+    <p>As you are a {{ user.groups.all.0|lower }}, you can <a href="{% url 'catalog:book-update' book.slug %}">edit</a> or <a href="{% url 'catalog:book-delete' book.slug %}">delete</a> this page.</p>
+    {% endif %}
     <hr>
     <img src="{{ book.cover.url }}" class="mercedes">
     <p align="justify">{{ book.summary }}</p>

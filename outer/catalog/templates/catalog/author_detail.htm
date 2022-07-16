@@ -4,9 +4,10 @@
 
     {% block content %}
     <h1>{{ author }}</h1>
-    {% if author.date_of_death == Null %}
+    {% if author.date_of_death == Null and author.date_of_birth %}
     <p><strong>Born in:</strong> {{ author.date_of_birth }}</p>
     <hr>
+    {% elif author.date_of_birth == Null %}
     {% else %}
     <p><strong>{{ author.date_of_birth}} - {{ author.date_of_death }}</strong></p>
     <hr>

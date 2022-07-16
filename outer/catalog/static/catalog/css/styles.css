@@ -10,8 +10,9 @@
 }
 
 .mercedes {
-    width: auto;
-    height: 300px;
+    /* width: auto; */
+    max-width: 220px;
+    max-height: 300px;
     float: right;
     margin-left: 20px;
     padding: 1px;
@@ -68,7 +69,6 @@ th, td {
     /* padding-right: min(25px, 10%); */
 }
 
-
 .pagination {
     display: flex;
 }
@@ -90,4 +90,31 @@ th, td {
 .former {
     color: red;
     font-weight: bolder;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+
+
+
+#wrapper {
+    width: 500px;
+    /* border: 1px solid black; */
+    overflow: hidden; /* will contain if #first is longer than #second */
+}
+#first {
+    width: 280px;
+    float:left; /* add this */
+    /* border: 1px solid red; */
+}
+#second {
+    /* border: 1px solid green; */
+    overflow: hidden; /* if you don't want #second to wrap below #first */
 }
