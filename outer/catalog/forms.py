@@ -54,7 +54,9 @@ class CreateProfileForm(forms.ModelForm):
             'phone',
             'description',
             'userpic',
+            'user',
         ]
         widgets = {
             'description': forms.Textarea(),
+            'user': forms.HiddenInput(),
         }

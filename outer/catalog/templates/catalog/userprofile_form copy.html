@@ -1,0 +1,57 @@
+{% extends "catalog/base.htm" %} {% block content %}
+<div class="card-body p-1 text-left">
+	<form action="" method="post" enctype="multipart/form-data">
+		{% csrf_token %} {% comment %}
+		<table>
+			{{ form.as_table }}
+		</table>
+		{% endcomment %}
+
+		{% comment %} <div class="mb-md-2 mt-md-1 pb-2"> {% endcomment %}
+		<div id="wrapper">
+		<div class="col-sm-4" id="first">
+			<h3>{{ form.first_name.label }}*</h3>
+			<p>{{ form.first_name }}</p>
+			<h3>{{ form.last_name.label }}*</h3>
+			<p>{{ form.last_name }}</p>
+			<h3>{{ form.phone.label }}</h3>
+			<p>{{ form.phone }}</p>
+			<br>
+			<br>
+			<h3>{{ form.description.label }}</h3>
+			<p>{{ form.description }}</p>
+			{{ form.userpic }}
+            <input type="hidden" name="user" value="{{ user.id }}">
+			<div>
+				<button
+					class="btn btn-outline-dark btn-md px-5"
+					type="submit"
+					style="text-align: center"
+				>
+					Submit
+				</button>
+			</div>
+		</div>
+	{% comment %} </form> {% endcomment %}
+	<div id="second">
+		{% if user.userprofile.userpic %}
+		<img
+			src="{{ user.userprofile.userpic.url }}"
+			class="mercedes"
+			style="margin: left 0px"
+		/>
+		{% endif %}
+		<br>
+		{% comment %} <span style="display: none;">{{ form.userpic }}</span> {% endcomment %}
+		{% comment %} <p>""</p> {% endcomment %}
+		{% comment %} <label for="{{ form.userpic.id_for_label }}"><strong style="color: blue"> {% endcomment %}
+			{% comment %} Press <u>here</u> to upload a photo. {% endcomment %}
+		{% comment %} </strong></label> {% endcomment %}
+		
+		{% if form.errors %} <p style="color:red">Bad data, make sure to fill every '*' field.</p> {% endif %}
+        {{form.errors}}
+		</div>
+		</form>
+</div>
+</div>
+{% endblock %}

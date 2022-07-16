@@ -2,9 +2,10 @@
 # python built in libs
 from datetime import *
 from re import template
+from sre_constants import SUCCESS
 # net stuff
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponseRedirect
 # auth stuff
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -16,7 +17,7 @@ from .models import Book, Author, BookInstance, Genre, Language, UserProfile
 from catalog.forms import RenewBookForm, CreateBookForm, CreateProfileForm
 from django import forms
 
-
+from django.contrib.auth.models import Group
 ########################### HOMEPAGE ################################
 
 
@@ -146,11 +147,38 @@ class ProfileView(generic.DetailView):
     template_name = 'catalog/profile.htm'
 
 
-class UpdateProfileView(generic.edit.UpdateView):
+# class UpdateProfileView(generic.edit.UpdateView):
+#     model = UserProfile
+#     form_class = CreateProfileForm
+#     template_name = 'catalog/userprofile_form.html'
+
+class UpdateProfileView(LoginRequiredMixin, View):
     model = UserProfile
-    form_class = CreateProfileForm
-    template_name = 'catalog/userprofile_form.html'
-    # fields = '__all__'
+    template = 'catalog/userprofile_form.html'
+
+    def get(self, request, slug):
+        actual_profile = get_object_or_404(self.model, slug=slug)
+        form = CreateProfileForm(instance=actual_profile)
+        ctx = {
+            'form': form,
+        }
+        return render(request, self.template, ctx)
+
+    def post(self, request, slug):
+        actual_profile = get_object_or_404(self.model, slug=slug)
+        form = CreateProfileForm(request.POST, request.FILES, instance=actual_profile)
+        print('REQUEEEEEEEEEEEEEEEST', request)
+        if not form.is_valid:
+            ctx = {
+                'form': form,
+            }
+            return render(request, self.template, ctx)
+
+        form.save()
+        library_member = Group.objects.get(name='Library Member')
+        library_member.user_set.add(actual_profile.user)
+        return redirect('catalog:user-profile', slug)
+
 
 ########################### CUD VIEWS ################################
 ############AUTHOR###########
