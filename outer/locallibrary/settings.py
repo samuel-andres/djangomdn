@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog.apps.CatalogConfig',
     'django_extensions',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -85,9 +86,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mdndbslug',
         'USER': 'postgres',
-        'PASSWORD':'postgres',
-        'HOST':'10.0.3.3',
-        'PORT':'5432'
+        'PASSWORD': 'postgres',
+        'HOST': '10.0.3.3',
+        'PORT': '5432'
     }
 }
 

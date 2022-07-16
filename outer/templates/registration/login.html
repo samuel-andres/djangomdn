@@ -15,8 +15,11 @@
                 <form method="post" action="{% url 'login' %}">
                     {% csrf_token %}
                     <div class="mb-md-2 mt-md-1 pb-2">
-  
+                    
                     <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                    {% for message in messages  %}
+                      <p id="messages">{{ message }}</p>
+                    {% endfor %}
                     {% if '/author/' in next %}
                     {% if user.is_authenticated %}
                     <p style="font-size: x-large; color:red" class="text-red-50 mb-5">Permission denied.</p>
@@ -28,12 +31,24 @@
                     {% endif %}
   
                     <div class="form-outline form-white mb-4">
-                    <input type="text" id="typeEmailX" name="username" class="form-control form-control-lg" />
+                    <input 
+                      type="text" 
+                      id="typeEmailX" 
+                      name="username" 
+                      class="form-control form-control-lg" 
+                      value= "{% if form.username.value %} {{ form.username.value }}{% endif %}"
+                    />
                     <label class="form-label" for="typeEmailX">Username</label>
                     </div>
   
                     <div class="form-outline form-white mb-4">
-                    <input type="password" id="typePasswordX"  name="password" class="form-control form-control-lg" />
+                    <input 
+                      type="password" 
+                      id="typePasswordX"  
+                      name="password" 
+                      class="form-control form-control-lg" 
+                      value="{% if form.password.value %} {{ form.password.value }}{% endif %}"
+                    />
                     <label class="form-label" for="typePasswordX">Password</label>
                     </div>
   
@@ -46,7 +61,7 @@
               </div>
   
               <div class="pader">
-                <p class="mb-0">Don't have an account? <a href="{% url 'catalog:sign-up' %}" class="text-black-50 fw-bold">Sign up</a>
+                <p class="mb-0">Don't have an account? <a href="{% url 'accounts:sign-up' %}" class="text-black-50 fw-bold">Sign up</a>
                 </p>
               </div>
   
