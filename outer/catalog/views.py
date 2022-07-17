@@ -296,7 +296,7 @@ class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
     )
 
     model = Book
-    success_url = reverse_lazy('catalog:book-detail')
+    success_url = reverse_lazy('catalog:book-list')
     template_name = 'catalog/book_confirm_delete.htm'
 
 
