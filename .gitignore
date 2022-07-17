@@ -90,3 +90,10 @@ outer/locallibrary/settings.py
 *.jpeg
 *.jpg
 *settings.py
+./locallibrary/settings.py
+outer/locallibrary/Sensible.py
+
+outer/locallibrary/sensible_dir/Sensible.py
+outer/locallibrary/sensible_dir/__init__.py
+outer/locallibrary/settings.py
+outer/locallibrary/settings.py
