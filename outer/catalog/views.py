@@ -21,7 +21,7 @@ from django import forms
 from django.contrib.auth.models import Group, User
 
 
-from catalog.user import UserCreateView, UserUpdateView
+from catalog.user import UserCreateView, UserUpdateView, UserDeleteView
 ########################### HOMEPAGE ################################
 
 
@@ -214,6 +214,12 @@ class UpdateProfileView(UserUpdateView):
 class CreateProfileView(UserCreateView):
     model = UserProfile
     form_class = CreateProfileForm
+
+
+class DeleteProfileView(UserDeleteView):
+    model = UserProfile
+    success_url = reverse_lazy('catalog:index')
+    template_name = 'catalog/profile_delete.htm'
 
 
 ########################### CUD VIEWS ################################

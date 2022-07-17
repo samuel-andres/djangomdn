@@ -31,3 +31,8 @@ class UserUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         usuario, lo que sobrecargaría el servidor y además comprometería la seguridad, aunque reescribiendo
         el get queryset ya no podrían editarlo esto es lo óptimo'''
         return get_object_or_404(UserProfile, slug=self.request.user.username)
+
+
+class UserDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    def get_object(self):
+        return get_object_or_404(UserProfile, slug=self.request.user.username)

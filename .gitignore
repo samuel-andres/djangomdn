@@ -85,3 +85,8 @@ outer/media/authpics/2012-03-21-chuck-all-tattoos_olLJgLr.jpg
 
 out/*
 outer/echo.txt
+outer/locallibrary/settings.py
+outer/locallibrary/settings.py
+*.jpeg
+*.jpg
+*settings.py
