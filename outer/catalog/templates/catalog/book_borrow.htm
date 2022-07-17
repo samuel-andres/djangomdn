@@ -2,10 +2,7 @@
 
 {% block content %}
 <div style="text-align: center;">
-  <h1>Renew: {{ book_instance.book.title }}</h1>
-  <h5>Borrower: @{{ book_instance.borrower }}</h5>
-  <p{% if book_instance.is_overdue %} class="text-danger"{% endif %}><strong>Due date: {{ book_instance.due_back }}</strong></p>
-
+  <h1>Book: {{ book_instance.book.title }}</h1>
   <form action="" method="post">
     {% csrf_token %}
     <span style="font-weight: bolder;">{{ form.renewal_date.label}}:</span>

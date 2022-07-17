@@ -1,0 +1,34 @@
+{% extends "catalog/base.htm" %}
+
+{% block content %}
+	<h1>Library Members</h1>
+    {% if userprofile_list %}
+        <table>
+  		{% for userprofile in userprofile_list %}
+            <tr>
+                <td>
+    		        <a href="{% url 'catalog:user-profile' userprofile.slug %}">@{{ userprofile.user }}</a> ({{userprofile}})
+                </td>
+                {% if userprofile.userpic %}
+                {% comment %} <li> {% endcomment %}
+                    <td>
+                        <img class="finitas" src="{{ userprofile.userpic.url }}" alt="">
+                    </td>
+            {% comment %} </li> {% endcomment %}
+                {% endif %}
+            </tr>
+    	{% endfor %}
+  	    </table>
+  	{% else %}
+    	<p>There are no userprofiles :( </p>
+  	{% endif %}
+{% endblock %}
+
+
+{% comment %} {% block rightbar %}
+	{% for userprofile in userprofile_list  %}
+    {% if userprofile.userpic %}
+    <img class="finitas" src="{{ userprofile.userpic.url }}" alt="">
+    {% endif %}
+    {% endfor %}
+{% endblock %} {% endcomment %}

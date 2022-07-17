@@ -52,6 +52,11 @@
 									>All authors</a
 								>
 							</li>
+							<li>
+								<a href="{% url 'catalog:profile-list' %}" %}>
+									Library Members
+								</a>
+							</li>
 							<hr />
 							{% if user.is_authenticated %}
 							<li class="buldel">
@@ -94,7 +99,7 @@
 							{% endif %}
 							<hr />
 							<!-- </ul> -->
-							{% if perms.catalog.can_mark_returned %}
+							{% if perms.catalog.is_librarian %}
 							<!-- <ul style="border-right: 1px solid rgb(212, 212, 212);"> -->
 							<li class="buldel">
 								<strong>{{ user.groups.all.0 }}</strong>
@@ -102,6 +107,11 @@
 							<li>
 								<a href="{% url 'catalog:all-borrowed' %}"
 									>All borrowed</a
+								>
+							</li>
+							<li>
+								<a href="{% url 'catalog:all-toborrow' %}"
+									>Avaible copies</a
 								>
 							</li>
 							{% if perms.catalog.can_crud_authors%}

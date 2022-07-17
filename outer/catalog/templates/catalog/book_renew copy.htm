@@ -11,7 +11,6 @@
     <span style="font-weight: bolder;">{{ form.renewal_date.label}}:</span>
     <p>{{ form.renewal_date.default_value }}</p>
     <p>{{ form.renewal_date }}</p>
-    <p> {{ form.borrower_field }}</p>
     {% if form.errors %}
         {% for error in form.renewal_date.errors %}
             <span class="former"><p>{{ error | striptags }}</p></span>

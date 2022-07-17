@@ -30,4 +30,8 @@ urlpatterns = [
     #     path("create/profile/", views.CreateProfileView.as_view(), name="create-profile"),
     # forms.py VIEWS
     path('book/<uuid:pk>/renew/', views.BookRenewView.as_view(), name='book-renew'),
+    path('social/members', views.ProfileListView.as_view(), name='profile-list'),
+    path('book/<uuid:pk>/borrow/',
+         views.BorrowBookInstanceView.as_view(), name='book-borrow'),
+    path('alltoborrow/', views.AllToBorrowListView.as_view(), name='all-toborrow'),
 ]

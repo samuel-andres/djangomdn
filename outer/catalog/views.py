@@ -3,6 +3,7 @@
 from datetime import *
 from re import template
 from sre_constants import SUCCESS
+from webbrowser import get
 # net stuff
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render
@@ -17,7 +18,7 @@ from .models import Book, Author, BookInstance, Genre, Language, UserProfile
 from catalog.forms import RenewBookForm, CreateBookForm, CreateProfileForm
 from django import forms
 
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 
 from catalog.user import UserCreateView, UserUpdateView
@@ -107,6 +108,13 @@ class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
     def get_queryset(self):
         return BookInstance.objects.filter(status__exact='o').order_by('due_back')
 
+
+class AllToBorrowListView(AllBorrowedListView):
+    template_name = 'catalog/all_toborrow_list_view.htm'
+
+    def get_queryset(self):
+        return BookInstance.objects.filter(status__exact='a').order_by('book__title')
+
 ############AUTOR###########
 
 
@@ -152,9 +160,14 @@ class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class ProfileView(generic.DetailView):
+    ''' detail view del profile'''
     model = UserProfile
     template_name = 'catalog/profile.htm'
 
+
+class ProfileListView(generic.ListView):
+    model = UserProfile
+    template_name = 'catalog/profile_list.htm'
 
 # class UpdateProfileView(generic.edit.UpdateView):
 #     model = UserProfile
@@ -291,6 +304,49 @@ class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
 ############BOOK###########
 
 
+# class BorrowBookInstanceView(PermissionRequiredMixin, View):
+#     permission_required = (
+#         'catalog.is_librarian',
+#     )
+
+#     form_class = BorrowBookForm
+#     template_name = 'catalog/borrow_book.htm'
+#     initial = {}
+
+#     def get(self, request, pk):
+#         proposed_renewal_date = date.today() + timedelta(weeks=3)
+#         self.initial['renewal_date'] = proposed_renewal_date
+#         form = self.form_class(initial=self.initial)
+
+#         context = {
+#             'form': form,
+#         }
+
+#         return render(request, self.template_name, context)
+
+#     def post(self, request):
+#         # retrieve the book_instance
+#         book_instance = get_object_or_404(
+#             BookInstance, pk=request.POST['book_instance_field'])
+#         # retrieve the form with the data entered by the user
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             # <process form cleaned data> and store it
+#             book_instance.borrower = User.objects.get(
+#                 username=form.cleaned_data['borrower_field'])
+#             book_instance.due_back = form.cleaned_data['renewal_date']
+#             book_instance.save()
+
+#             return HttpResponseRedirect(reverse('catalog:all-borrowed'))
+
+#         context = {
+#             'form': form,
+#             'book_instance': book_instance,
+#         }
+
+#         return render(request, self.template_name, context)
+
+
 class BookRenewView(PermissionRequiredMixin, View):
     permission_required = (
         # 'catalog.can_mark_returned',
@@ -304,6 +360,9 @@ class BookRenewView(PermissionRequiredMixin, View):
     def get(self, request, pk):
         proposed_renewal_date = date.today() + timedelta(weeks=3)
         self.initial['renewal_date'] = proposed_renewal_date
+        actual_borrower = User.objects.get(
+            username=get_object_or_404(BookInstance, pk=pk).borrower)
+        self.initial['borrower_field'] = actual_borrower
         form = self.form_class(initial=self.initial)
 
         context = {
@@ -320,6 +379,8 @@ class BookRenewView(PermissionRequiredMixin, View):
         form = self.form_class(request.POST)
         if form.is_valid():
             # <process form cleaned data> and store it
+            book_instance.borrower = User.objects.get(
+                username=form.cleaned_data['borrower_field'])
             book_instance.due_back = form.cleaned_data['renewal_date']
             book_instance.save()
 
@@ -328,6 +389,22 @@ class BookRenewView(PermissionRequiredMixin, View):
         context = {
             'form': form,
             'book_instance': book_instance,
+        }
+
+        return render(request, self.template_name, context)
+
+
+class BorrowBookInstanceView(BookRenewView):
+    template_name = 'catalog/book_borrow.htm'
+
+    def get(self, request, pk):
+        proposed_renewal_date = date.today() + timedelta(weeks=3)
+        self.initial['renewal_date'] = proposed_renewal_date
+        form = self.form_class(initial=self.initial)
+
+        context = {
+            'form': form,
+            'book_instance': get_object_or_404(BookInstance, pk=pk),
         }
 
         return render(request, self.template_name, context)

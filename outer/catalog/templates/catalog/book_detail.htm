@@ -25,6 +25,7 @@
         <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">
             <strong>{{ copy.get_status_display }}</strong>
         </p>
+        {% comment %} <p>{% url 'catalog:book-renew' copy.uuid %}</p> {% endcomment %}
         <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
         <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>
         {% endfor %}

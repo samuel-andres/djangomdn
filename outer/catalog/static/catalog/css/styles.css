@@ -13,6 +13,8 @@
     /* width: auto; */
     max-width: 220px;
     max-height: 300px;
+    /* max-width: 50px; */
+    /* max-height: 50px; */
     float: right;
     margin-left: 20px;
     padding: 1px;
@@ -133,4 +135,23 @@ th, td {
     color: green;
     font-weight: bolder;
     font-size: x-large;
+}
+
+
+/* .finitas {
+    max-width: 50px;
+    max-height: 50px;
+    float: right;
+    margin-left: 20px;
+    padding: 1px;
+    border: 1px solid rgb(0, 0, 0);
+} */
+
+.finitas {
+    max-width: 30px;
+    max-height: 30px;
+    /* float: left; */
+    margin-left: 0px;
+    padding: 1px;
+    border: 1px solid rgb(0, 0, 0);
 }

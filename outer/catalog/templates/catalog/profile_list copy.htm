@@ -1,0 +1,35 @@
+{% extends "catalog/base.htm" %}
+
+{% block content %}
+	<h1>Library Members</h1>
+    {% if userprofile_list %}
+  		<ul>
+  		{% for userprofile in userprofile_list %}
+    		<li>
+        	<a href="{% url 'catalog:user-profile' userprofile.slug %}">{{ userprofile.user }}</a> ({{userprofile}})
+            </li>
+            {% if userprofile.userpic %}
+            {% comment %} <li> {% endcomment %}
+            <img class="finitas" src="{{ userprofile.userpic.url }}" alt="">
+            {% comment %} </li> {% endcomment %}
+            {% endif %}
+    	{% endfor %}
+  		</ul>
+  	{% else %}
+    	<p>There are no userprofiles :( </p>
+  	{% endif %}
+  	{% load static %}
+  	<img src="{% static '/catalog/images/anniehall.gif' %}" alt="" class="imgradius">
+  	<br>
+  	{{ today }}  
+	<br><br>
+{% endblock %}
+
+
+{% comment %} {% block rightbar %}
+	{% for userprofile in userprofile_list  %}
+    {% if userprofile.userpic %}
+    <img class="finitas" src="{{ userprofile.userpic.url }}" alt="">
+    {% endif %}
+    {% endfor %}
+{% endblock %} {% endcomment %}

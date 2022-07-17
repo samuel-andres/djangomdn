@@ -1,7 +1,7 @@
 {% extends "catalog/base.htm" %}
 
 {% block content %}
-    <h1>All borrowed books</h1>
+    <h1>Avaible copies</h1>
     <div class="pagination">
     {% if bookinstance_list %}
     <table>
@@ -9,10 +9,8 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Book</th>
-                <th scope="col">Expected return date</th>
-                <th scope="col">User</th>
                 <th scope="col">Copy ID</th>
-                <th scope="col">Renew</th>
+                <th scope="col">Borrow</th>
             </tr>
         </thead>
         <tbody>
@@ -20,10 +18,8 @@
                 <tr>
                     <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
                     <td><a href="{% url 'catalog:book-detail' bookinst.book.slug %}">{{bookinst.book.title}}</a></td>
-                    <td><span class="{% if bookinst.is_overdue %}text-danger{% endif %}" style="{% if bookinst.is_overdue %}font-weight:bolder{% endif %}">{{ bookinst.due_back }}</span></td>
-                    <td>{{ bookinst.borrower.userprofile }} (@{{ bookinst.borrower }})</td>
                     <td><span class="bookid">{{ bookinst.id }}</span></td>
-                    <td><a href="{% url 'catalog:book-renew' bookinst.id %}">Renew</a></td>
+                    <td><a href="{% url 'catalog:book-borrow' bookinst.id %}">Borrow</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -48,5 +44,5 @@
 	<!-- <a href="?page={{ page_obj.paginator.num_pages }}">Last page</a> -->
 	{% endif %}
     {% load static %}
-    <img src="{% static 'catalog/images/pugil.gif' %}" alt="" class="pugil">
+    <div style="width:100%;height:0;padding-bottom:121%;position:relative;"><iframe src="https://giphy.com/embed/SiMcadhDEZDm93GmTL" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/tiktok-excited-confused-studying-SiMcadhDEZDm93GmTL"></a></p>
 {% endblock %}
