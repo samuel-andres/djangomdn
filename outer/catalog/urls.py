@@ -15,7 +15,7 @@ urlpatterns = [
     path('author/<int:pk>', views.AuthorDetailView.as_view(), name='author-detail'),
     path('profile/<slug:slug>', views.ProfileView.as_view(), name='user-profile'),
     # CUD VIEWS
-    path('create/author', views.AuthorCreate.as_view(), name='author-create'),
+    path('create/author/', views.AuthorCreate.as_view(), name='author-create'),
     path('update/author/<int:pk>',
          views.AuthorUpdate.as_view(), name='author-update'),
     path('delete/author/<int:pk>',
@@ -23,8 +23,10 @@ urlpatterns = [
     path('create/book/', views.BookCreate.as_view(), name='book-create'),
     path('update/book/<slug:slug>', views.BookUpdate.as_view(), name='book-update'),
     path('delete/book/<slug:slug>', views.BookDelete.as_view(), name='book-delete'),
-    path('update/profile/<slug:slug>',
+    #     path('update/profile/<slug:slug>',
+    path('update/profile/',
          views.UpdateProfileView.as_view(), name='update-profile'),
+    path('create/profile/', views.CreateProfileView.as_view(), name='create-profile'),
     #     path("create/profile/", views.CreateProfileView.as_view(), name="create-profile"),
     # forms.py VIEWS
     path('book/<uuid:pk>/renew/', views.BookRenewView.as_view(), name='book-renew'),

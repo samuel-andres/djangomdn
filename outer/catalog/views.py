@@ -18,6 +18,9 @@ from catalog.forms import RenewBookForm, CreateBookForm, CreateProfileForm
 from django import forms
 
 from django.contrib.auth.models import Group
+
+
+from catalog.user import UserCreateView, UserUpdateView
 ########################### HOMEPAGE ################################
 
 
@@ -81,8 +84,14 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     template_name = 'catalog/bookinstance_list_borrowed_user.htm'
     paginate_by = 10
 
+    # el get_queryset es el método de la vista genérica que obtiene los objetos de la base de datos,
+    # acá lo sobreescribí llamando al método en la clase padre (super) y modificando su retorno para
+    # que solo me devuelva los que son del usuario actual, on loan y ordenados por fecha de devolución
+
     def get_queryset(self):
-        return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
+        qs = super(LoanedBooksByUserListView, self).get_queryset()
+        # return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
+        return qs.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
 
 
 class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
@@ -152,32 +161,46 @@ class ProfileView(generic.DetailView):
 #     form_class = CreateProfileForm
 #     template_name = 'catalog/userprofile_form.html'
 
-class UpdateProfileView(LoginRequiredMixin, View):
+
+# el problema con esta vista es que no está restringiendo el acceso a editar
+# solo nuestra información, es decir, si desde un usuario hardcodeo el link para editar
+# otro usuario rompo todo
+# class UpdateProfileView(LoginRequiredMixin, View):
+#     model = UserProfile
+#     template = 'catalog/userprofile_form.html'
+
+#     def get(self, request, slug):
+#         actual_profile = get_object_or_404(self.model, slug=slug)
+#         form = CreateProfileForm(instance=actual_profile)
+#         ctx = {
+#             'form': form,
+#         }
+#         return render(request, self.template, ctx)
+
+#     def post(self, request, slug):
+#         actual_profile = get_object_or_404(self.model, slug=slug)
+#         form = CreateProfileForm(
+#             request.POST, request.FILES, instance=actual_profile)
+#         print('REQUEEEEEEEEEEEEEEEST', request)
+#         if not form.is_valid:
+#             ctx = {
+#                 'form': form,
+#             }
+#             return render(request, self.template, ctx)
+
+#         form.save()
+#         library_member = Group.objects.get(name='Library Member')
+#         library_member.user_set.add(actual_profile.user)
+#         return redirect('catalog:user-profile', slug)
+
+class UpdateProfileView(UserUpdateView):
     model = UserProfile
-    template = 'catalog/userprofile_form.html'
+    form_class = CreateProfileForm
 
-    def get(self, request, slug):
-        actual_profile = get_object_or_404(self.model, slug=slug)
-        form = CreateProfileForm(instance=actual_profile)
-        ctx = {
-            'form': form,
-        }
-        return render(request, self.template, ctx)
 
-    def post(self, request, slug):
-        actual_profile = get_object_or_404(self.model, slug=slug)
-        form = CreateProfileForm(request.POST, request.FILES, instance=actual_profile)
-        print('REQUEEEEEEEEEEEEEEEST', request)
-        if not form.is_valid:
-            ctx = {
-                'form': form,
-            }
-            return render(request, self.template, ctx)
-
-        form.save()
-        library_member = Group.objects.get(name='Library Member')
-        library_member.user_set.add(actual_profile.user)
-        return redirect('catalog:user-profile', slug)
+class CreateProfileView(UserCreateView):
+    model = UserProfile
+    form_class = CreateProfileForm
 
 
 ########################### CUD VIEWS ################################

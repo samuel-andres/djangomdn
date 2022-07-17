@@ -31,8 +31,9 @@ class SignUpView(View):
 
         if form.is_valid():
             user = form.save()
-            userprofile = UserProfile(user=user)
-            userprofile.save()
+            # DESCOMENTAR ESTAS DOS LINEAS
+            # userprofile = UserProfile(user=user)
+            # userprofile.save()
             new_user = form.cleaned_data.get('username')
             messages.success(
                 request,
