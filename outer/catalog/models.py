@@ -1,9 +1,9 @@
 from django.db import models
 from django.urls import reverse
-from django.db.models.signals import pre_save
 from django.utils.text import slugify
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from datetime import date
+from django.db.models.signals import pre_save
 
 import uuid
 
@@ -86,15 +86,14 @@ class Book(models.Model):
         return ', '.join(genre.name for genre in self.genre.all()[:3])
     display_genre.short_description = 'Genre'
 
+    def set_slug(sender, instance, *args, **kwargs):
+        if instance.slug:
+            return
+        instance.slug = slugify(
+            instance.title+'-'+instance.author.first_name+instance.author.last_name)
 
-def set_slug(sender, instance, *args, **kwargs):
-    if instance.slug:
-        return
-    instance.slug = slugify(
-        instance.title+'-'+instance.author.first_name+instance.author.last_name)
 
-
-pre_save.connect(set_slug, sender=Book)
+# pre_save.connect(Book.set_slug, sender=Book)
 
 
 class BookInstance(models.Model):
@@ -162,20 +161,22 @@ class UserProfile(models.Model):
 
     slug = models.SlugField(null=False, blank=False, unique=True)
 
-    def set_upslug(sender, instance, *args, **kwargs):
+    def set_slug(sender, instance, *args, **kwargs):
         if instance.slug:
             return
         instance.slug = slugify(
             instance.user.username)
+
+    def set_membership(sender, instance, created, **kwargs):
+        # if created:
+        library_member = Group.objects.get(name='Library Member')
+        library_member.user_set.add(instance.user)
 
     def __str__(self) -> str:
         return f'{self.last_name}, {self.first_name}'
 
     def get_absolute_url(self):
         return reverse('catalog:user-profile', args=[str(self.slug)])
-
-
-pre_save.connect(UserProfile.set_upslug, sender=UserProfile)
 
 
 class LibrarianGroupBasedPermission(models.Model):

@@ -13,7 +13,7 @@
     {% endif %}
     {% if  userprofile.user == user %}
     {% comment %} <p>You can <a href="{% url 'catalog:update-profile' userprofile.slug %}">update</a> your profile if you want</p> {% endcomment %}
-    <p>You can <a href="{% url 'catalog:update-profile' %}">update</a> your profile if you want</p>
+    <p>You can <a href="{% url 'catalog:update-profile' %}">edit</a> your profile if you want</p>
 
     {% endif %}
     <h4>Description:</h4>

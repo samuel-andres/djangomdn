@@ -227,13 +227,21 @@ class AuthorCreate(PermissionRequiredMixin, generic.edit.CreateView):
     }
 
 
-class AuthorUpdate(generic.edit.UpdateView):
+class AuthorUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
+    permission_required = (
+        # 'catalog.can_crud_authors',
+        'catalog.is_librarian',
+    )
     model = Author
     # using the __all__ is a bad practice
     fields = '__all__'
 
 
-class AuthorDelete(generic.edit.DeleteView):
+class AuthorDelete(PermissionRequiredMixin, generic.edit.DeleteView):
+    permission_required = (
+        # 'catalog.can_crud_authors',
+        'catalog.is_librarian',
+    )
     model = Author
     success_url = reverse_lazy('catalog:author-list')
 
