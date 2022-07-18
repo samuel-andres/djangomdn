@@ -103,16 +103,14 @@ class BookInstance(models.Model):
     due_back = models.DateField(
         'Expected date of availability', null=True, blank=True)
     LOAN_STATUS = (
-        ('m', 'Maintenance'),
         ('o', 'On loan'),
         ('a', 'Available'),
-        ('r', 'Reserved'),
     )
     status = models.CharField(
         max_length=1,
         choices=LOAN_STATUS,
         blank=True,
-        default='m',
+        default='a',
         help_text='Book availability',
     )
 
@@ -177,6 +175,13 @@ class UserProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalog:user-profile', args=[str(self.slug)])
+
+    def liberate_loaned_books(sender, instance, *args, **kwargs):
+        # print('debug_liberate_loaned_books', instance)
+        for i in instance.user.bookinstance_set.iterator():
+            i.status = 'a'
+            i.save()
+            print('debug_liberate_loaned_books')
 
 
 class LibrarianGroupBasedPermission(models.Model):

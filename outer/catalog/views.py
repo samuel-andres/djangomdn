@@ -1,27 +1,23 @@
 ########################### IMPORTS ################################
-# python built in libs
+# datetime handlers
 from datetime import *
-from re import template
-from sre_constants import SUCCESS
-from webbrowser import get
+from webbrowser import GenericBrowser
 # net stuff
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 # auth stuff
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.auth.decorators import login_required
-# Views, forms and models
+## Views, forms and models
+# Views
 from django.views import View, generic
-
-from .models import Book, Author, BookInstance, Genre, Language, UserProfile
+from catalog.user import UserCreateView, UserUpdateView
+# Models
+from django.contrib.auth.models import User
+from .models import Book, Author, BookInstance, Genre, UserProfile
+# Forms
 from catalog.forms import RenewBookForm, CreateBookForm, CreateProfileForm
-from django import forms
 
-from django.contrib.auth.models import Group, User
-
-
-from catalog.user import UserCreateView, UserUpdateView, UserDeleteView
 ########################### HOMEPAGE ################################
 
 
@@ -40,9 +36,6 @@ class IndexView(View):
         # The 'all()' is implied by default.
         num_authors = Author.objects.count()
 
-        nobooks_cont_the = Book.objects.filter(title__icontains='the').count()
-        nogen_that_sw_caph = Genre.objects.filter(name__startswith='H').count()
-
         num_visits = request.session.get('num_visits', 0)
         request.session['num_visits'] = num_visits + 1
 
@@ -51,8 +44,6 @@ class IndexView(View):
             'num_instances': num_instances,
             'num_instances_available': num_instances_available,
             'num_authors': num_authors,
-            'nobooks_cont_the': nobooks_cont_the,
-            'nogen_that_sw_caph': nogen_that_sw_caph,
             'num_visits': num_visits + 1,
 
         }
@@ -95,25 +86,36 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
         return qs.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
 
 
-class AllBorrowedListView(PermissionRequiredMixin, generic.ListView):
+class GenericBorrowListView(PermissionRequiredMixin, generic.ListView):
+    ''' vista generica para las vistas de lista de instancias de libro con permisos
+    de librarian requeridos, extiende la vista genérica de ListView reescribiendo el
+    get_queryset con filtro de estado y orden especificado por las clases hijas'''
     permission_required = (
-        # 'catalog.can_mark_returned',
         'catalog.is_librarian',
     )
 
     model = BookInstance
-    template_name = 'catalog/all_borrowed_list_view.htm'
     paginate_by = 10
 
+    status = ''
+    order_condition = None
+
     def get_queryset(self):
-        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
+        return BookInstance.objects.filter(status__exact=self.status).order_by(self.order_condition)
+
+
+class AllBorrowedListView(GenericBorrowListView):
+    ''' vista con bookinstances en estado on loan ordenadas por fecha de due back'''
+    template_name = 'catalog/all_borrowed_list_view.htm'
+    status = 'o'
+    order_condition = 'due_back'
 
 
 class AllToBorrowListView(AllBorrowedListView):
+    ''' vista con bookinstances en estado disponible ordenadas por titulo del libro'''
     template_name = 'catalog/all_toborrow_list_view.htm'
-
-    def get_queryset(self):
-        return BookInstance.objects.filter(status__exact='a').order_by('book__title')
+    status = 'a'
+    order_condition = 'book__title'
 
 ############AUTOR###########
 
@@ -151,11 +153,10 @@ class BookDetailView(PermissionRequiredMixin, View):
 
 
 class AuthorDetailView(LoginRequiredMixin, generic.DetailView):
-    # @login_required se usa para func based views
     model = Author
     template_name = 'catalog/author_detail.htm'
-    # loginmixin
     login_url = 'login'
+
 ###########USERPROFILE########
 
 
@@ -207,6 +208,12 @@ class ProfileListView(generic.ListView):
 #         return redirect('catalog:user-profile', slug)
 
 class UpdateProfileView(UserUpdateView):
+    ''' vista para updatear el perfil que extiende la vista definida en users.py que
+    limita el get_object al usuario logueado, evitando mostrar el url de updatear perfil
+    para gordos que hardcodeen y limitando el acceso, lo mismo con CreateProfileView y
+    DeleteProfileView. Los forms además ni tienen el campo con la relación, por eso usan
+    ambas vistas el mismo, primero se muestra el formulario, si no existia a partir del POST se crea
+    si ya existia a partir del POST se actualiza (cad auno con su view)'''
     model = UserProfile
     form_class = CreateProfileForm
 
@@ -216,7 +223,10 @@ class CreateProfileView(UserCreateView):
     form_class = CreateProfileForm
 
 
-class DeleteProfileView(UserDeleteView):
+class DeleteProfileView(PermissionRequiredMixin, generic.edit.DeleteView):
+    permission_required = (
+        'catalog.is_librarian',
+    )
     model = UserProfile
     success_url = reverse_lazy('catalog:index')
     template_name = 'catalog/profile_delete.htm'
@@ -228,7 +238,6 @@ class DeleteProfileView(UserDeleteView):
 
 class AuthorCreate(PermissionRequiredMixin, generic.edit.CreateView):
     permission_required = (
-        # 'catalog.can_crud_authors',
         'catalog.is_librarian',
     )
     model = Author
@@ -248,7 +257,6 @@ class AuthorCreate(PermissionRequiredMixin, generic.edit.CreateView):
 
 class AuthorUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
     permission_required = (
-        # 'catalog.can_crud_authors',
         'catalog.is_librarian',
     )
     model = Author
@@ -258,7 +266,6 @@ class AuthorUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
 
 class AuthorDelete(PermissionRequiredMixin, generic.edit.DeleteView):
     permission_required = (
-        # 'catalog.can_crud_authors',
         'catalog.is_librarian',
     )
     model = Author
@@ -269,7 +276,6 @@ class AuthorDelete(PermissionRequiredMixin, generic.edit.DeleteView):
 
 class BookCreate(PermissionRequiredMixin, generic.edit.CreateView):
     permission_required = (
-        # 'catalog.can_crud_books',
         'catalog.is_librarian',
     )
 
@@ -286,7 +292,6 @@ class BookCreate(PermissionRequiredMixin, generic.edit.CreateView):
 
 class BookUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
     permission_required = (
-        # 'catalog.can_crud_books',
         'catalog.is_librarian',
     )
 
@@ -297,7 +302,6 @@ class BookUpdate(PermissionRequiredMixin, generic.edit.UpdateView):
 
 class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
     permission_required = (
-        # 'catalog.can_crud_books',
         'catalog.is_librarian',
     )
 
@@ -355,7 +359,6 @@ class BookDelete(PermissionRequiredMixin, generic.edit.DeleteView):
 
 class BookRenewView(PermissionRequiredMixin, View):
     permission_required = (
-        # 'catalog.can_mark_returned',
         'catalog.is_librarian',
     )
 
@@ -388,6 +391,7 @@ class BookRenewView(PermissionRequiredMixin, View):
             book_instance.borrower = User.objects.get(
                 username=form.cleaned_data['borrower_field'])
             book_instance.due_back = form.cleaned_data['renewal_date']
+            book_instance.status = 'o'
             book_instance.save()
 
             return HttpResponseRedirect(reverse('catalog:all-borrowed'))
@@ -407,10 +411,31 @@ class BorrowBookInstanceView(BookRenewView):
         proposed_renewal_date = date.today() + timedelta(weeks=3)
         self.initial['renewal_date'] = proposed_renewal_date
         form = self.form_class(initial=self.initial)
-
         context = {
             'form': form,
             'book_instance': get_object_or_404(BookInstance, pk=pk),
         }
 
         return render(request, self.template_name, context)
+
+
+class LiberateBookGenericView(PermissionRequiredMixin, generic.edit.UpdateView):
+    ''' sobreescribe el  método form_valid agregando un paso más a la validación del form,
+    que es setearle el usuario que hace el request '''
+    permission_required = (
+        'catalog.is_librarian',
+    )
+
+    def form_valid(self, form):
+        object = form.save(commit=False)
+        object.borrower = None
+        object.status = 'a'
+        object.save()
+        return super(LiberateBookGenericView, self).form_valid(form)
+
+
+class LiberateBookInstanceView(LiberateBookGenericView):
+    template_name = 'catalog/book_liberate.htm'
+    model = BookInstance
+    fields = []
+    success_url = reverse_lazy('catalog:all-borrowed')

@@ -1,7 +1,5 @@
-from django import shortcuts
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-# from django.contrib.auth.models import User
 from catalog.models import UserProfile
 from django.shortcuts import get_object_or_404
 
@@ -19,20 +17,20 @@ class UserCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 class UserUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     def get_queryset(self):
-        ''' esto es para cuando un usuario o owner tiene muchas cosas que puede editar,
-        en este caso es innecesario ya que es una relación uno a uno, pero igual añade
-        seguridad y robustez'''
+        # esto es para cuando un usuario o owner tiene muchas cosas que puede editar,
+        # en este caso es innecesario ya que es una relación uno a uno, pero igual añade
+        # seguridad y robustez
         qs = super(UserUpdateView, self).get_queryset()
         return qs.filter(user=self.request.user)
 
     def get_object(self):
-        ''' esto hace que no haga falta pasar el slug por la url, ocultando información sensible
-        a los usuarios, de lo contrario podrían intentar acceder a la página de edit profile de otro
-        usuario, lo que sobrecargaría el servidor y además comprometería la seguridad, aunque reescribiendo
-        el get queryset ya no podrían editarlo esto es lo óptimo'''
+        # esto hace que no haga falta pasar el slug por la url, ocultando información sensible
+        # a los usuarios, de lo contrario podrían intentar acceder a la página de edit profile de otro
+        # usuario, lo que sobrecargaría el servidor y además comprometería la seguridad, aunque reescribiendo
+        # el get queryset ya no podrían editarlo esto es lo óptimo
         return get_object_or_404(UserProfile, slug=self.request.user.username)
 
 
-class UserDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
-    def get_object(self):
-        return get_object_or_404(UserProfile, slug=self.request.user.username)
+# class UserDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+#     def get_object(self):
+#         return get_object_or_404(UserProfile, slug=self.request.user.username)

@@ -4,15 +4,16 @@
     <h1>All borrowed books</h1>
     <div class="pagination">
     {% if bookinstance_list %}
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Book</th>
                 <th scope="col">Expected return date</th>
                 <th scope="col">User</th>
-                <th scope="col">Copy ID</th>
                 <th scope="col">Renew</th>
+                <th scope="col">Liberate</th>
+                <th scope="col">ID</th>
             </tr>
         </thead>
         <tbody>
@@ -22,8 +23,13 @@
                     <td><a href="{% url 'catalog:book-detail' bookinst.book.slug %}">{{bookinst.book.title}}</a></td>
                     <td><span class="{% if bookinst.is_overdue %}text-danger{% endif %}" style="{% if bookinst.is_overdue %}font-weight:bolder{% endif %}">{{ bookinst.due_back }}</span></td>
                     <td>{{ bookinst.borrower.userprofile }} (@{{ bookinst.borrower }})</td>
-                    <td><span class="bookid">{{ bookinst.id }}</span></td>
-                    <td><a href="{% url 'catalog:book-renew' bookinst.id %}">Renew</a></td>
+                    {% comment %} <td>@{{ bookinst.borrower }}</td> {% endcomment %}
+                    
+                    <td><a href="{% url 'catalog:book-renew' bookinst.id %}" >Renew</a></td>
+                    <td><a href="{% url 'catalog:book-liberate' bookinst.id %}">Liberate</a></td>
+                    {% comment %} <td><span class="bookid">{{ bookinst.id|truncatechars:5 }}</span></td> {% endcomment %}
+                    <td><span class="bookid">{{ bookinst.id}}</span></td>
+
                 </tr>
             {% endfor %}
         </tbody>

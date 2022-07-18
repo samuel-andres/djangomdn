@@ -34,5 +34,8 @@ urlpatterns = [
     path('book/<uuid:pk>/borrow/',
          views.BorrowBookInstanceView.as_view(), name='book-borrow'),
     path('alltoborrow/', views.AllToBorrowListView.as_view(), name='all-toborrow'),
-    path('delete/profile/', views.DeleteProfileView.as_view(), name='profile-delete'),
+    path('delete/profile/<slug:slug>',
+         views.DeleteProfileView.as_view(), name='profile-delete'),
+    path('book/<uuid:pk>/liberate/',
+         views.LiberateBookInstanceView.as_view(), name='book-liberate'),
 ]

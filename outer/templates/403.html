@@ -2,7 +2,9 @@
 
 {% block content %}
 {% if perms.catalog.is_library_member %}
-<h1 style="color: red">hard-code the link again and will get banned.</h1>
+{% comment %} <h1 style="color: red">que buscás flaco?</h1> {% endcomment %}
+{% load static %}
+<img src="{% static '403.gif' %}" alt="">
 {% else %}
   <h1>You don't have access to this page!</h1>
   <p>Update your profile to become a <span class="libmem">Library Member</span> and obtain access to all kind of book content for free!</p>

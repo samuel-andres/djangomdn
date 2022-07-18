@@ -3,16 +3,26 @@
 {% block content %}
 	<h1>Library Members</h1>
     {% if userprofile_list %}
-        <table>
+        <table class="table">
   		{% for userprofile in userprofile_list %}
             <tr>
                 <td>
     		        <a href="{% url 'catalog:user-profile' userprofile.slug %}">@{{ userprofile.user }}</a> ({{userprofile}})
+                    {% if  userprofile.user.bookinstance_set.count > 0 %} 
+                    <p>Reading:
+                        <ul>
+                            {% for bookinst in userprofile.user.bookinstance_set.all %}
+                            <li><a href="{% url 'catalog:book-detail' bookinst.book.slug %}">{{ bookinst.book }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                    {% endif %}
                 </td>
                 {% if userprofile.userpic %}
                 {% comment %} <li> {% endcomment %}
                     <td>
-                        <img class="finitas" src="{{ userprofile.userpic.url }}" alt="">
+                        <!-- <img class="finitas" src="{{ userprofile.userpic.url }}" alt=""> -->
+                        <img class="img-thumbnail" id="tumneil"src="{{ userprofile.userpic.url }}" alt="">
                     </td>
             {% comment %} </li> {% endcomment %}
                 {% endif %}

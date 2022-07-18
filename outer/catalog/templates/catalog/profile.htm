@@ -13,8 +13,11 @@
     {% endif %}
     {% if  userprofile.user == user %}
     {% comment %} <p>You can <a href="{% url 'catalog:update-profile' userprofile.slug %}">update</a> your profile if you want</p> {% endcomment %}
-    <p>You can <a href="{% url 'catalog:update-profile' %}">edit</a> or <a href="{% url 'catalog:profile-delete' %}">delete</a> your profile if you want</p>
-
+    {% comment %} <p>You can <a href="{% url 'catalog:update-profile' %}">edit</a> or <a href="{% url 'catalog:profile-delete' %}">delete</a> your profile if you want</p> {% endcomment %}
+    <p>You can <a href="{% url 'catalog:update-profile' %}">edit</a> your profile if you want.</p>
+    {% endif %}
+    {% if perms.catalog.is_librarian %}
+    <a href="{% url 'catalog:profile-delete' userprofile.slug %}">delete</a> this profile if you want</p>
     {% endif %}
     <h4>Description:</h4>
     <p align="justify">{{ userprofile.description }}</p>

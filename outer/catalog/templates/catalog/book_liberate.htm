@@ -1,0 +1,14 @@
+{% extends "catalog/base.htm" %}
+{{ form.as_p }}
+{% block content %}
+
+<h1>Liberate Copy</h1>
+
+<p>Are you sure you want to liberate this copy?</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <button class="btn btn-outline-dark btn-lg px-5" type="submit">Yes, the book was returned.</button>
+</form>
+
+{% endblock %}
