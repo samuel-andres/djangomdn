@@ -1,0 +1,32 @@
+services:
+
+  web:
+    container_name: llmdnweb
+    build:
+      context: ./app/
+#    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn locallibrary.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./app/:/usr/src/app/
+      - static_files:/usr/src/app/staticfiles
+      - media_files:/usr/src/app/media
+    expose:
+     - 8000
+#    ports:
+#      - 7895:8000
+    env_file:
+      - ./.env/dev.env
+  nginx:
+    container_name: llmdnnginx
+    build:
+      context: ./nginx/
+    ports:
+      - 7896:80
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - static_files:/home/app/staticfiles
+      - media_files:/home/app/media
+
+volumes:
+  static_files:
+  media_files:
