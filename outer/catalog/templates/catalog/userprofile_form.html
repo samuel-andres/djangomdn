@@ -1,26 +1,5 @@
-{% extends "catalog/base.htm" %} {% block content %}
-<div class="card-body p-1 text-left">
-	<form action="" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
-		<table>
-			{{ form.as_table }}
-			<tbody>
-				<tr>
-					<th>Confirm:</th>
-					<td>
-						<button
-							class="btn btn-outline-dark btn-sm px-5"
-							type="submit"
-							style="text-align: center"
-						>
-							Submit
-						</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-</div>
-{% endblock %} {% block rightbar %} {% if book.cover %}
-<img src="{{ userprofile.userpic.url }}" class="mercedes" />
+{% extends "catalog/base.htm" %} {% load crispy_forms_tags %} {% block content %} {% csrf_token %} 
+{% crispy form %}
+{% endblock %} {% block rightbar %} {% if userprofile.userpic %}
+<img src="{{ userprofile.userpic.url }}" class="mercedes" style="left-margin: 100px;" />
 {% endif %} {% endblock %}

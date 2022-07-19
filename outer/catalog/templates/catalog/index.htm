@@ -22,7 +22,9 @@
   <p>You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.</p>
   {% endif %}
   {% load static %}
+  <div class="img-fluid">
   <img src="{% static '/catalog/images/harrylib.webp' %}" alt="" class="imgradius">
+  </div>
   <br>
   <br>
 {% endblock %}

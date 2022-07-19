@@ -7,12 +7,23 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit, Layout, Field
+
 
 class RenewBookForm(forms.Form):
     '''if not specified the default label is the name
     of the field with a capital letter and a space instead of an underscore'''
     renewal_date = forms.DateField(
-        help_text="Enter a date between now and 4 weeks (default 3).")
+        help_text="Enter a date between now and 4 weeks (default 3).",
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'max': datetime.date.today() + datetime.timedelta(weeks=4),
+                'min': datetime.date.today()
+            }
+        )
+    )
 
     borrower_choices = dict()
 
@@ -22,7 +33,8 @@ class RenewBookForm(forms.Form):
     borrower_choices = list(borrower_choices.items())
     # print(borrower_choices)
 
-    borrower_field = forms.ChoiceField(choices=borrower_choices)
+    borrower_field = forms.ChoiceField(
+        choices=borrower_choices)
 
     def clean_renewal_date(self):
         # gets us the data "cleaned" and sanitized of potentially unsafe input using the default validators, and converted into the correct standard type for the data (in this case a Python datetime.datetime object)
@@ -53,7 +65,13 @@ class CreateBookForm(forms.ModelForm):
         ]
         widgets = {
             'summary': forms.Textarea(),
+            'genre': forms.CheckboxSelectMultiple(),
+            'pubdate': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.form_method = 'POST'
 
 
 class CreateProfileForm(forms.ModelForm):
@@ -71,3 +89,6 @@ class CreateProfileForm(forms.ModelForm):
             'description': forms.Textarea(),
             # 'user': forms.HiddenInput(), <-- NO HACER NUNCA ESTO!
         }
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.form_method = 'POST'

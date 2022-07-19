@@ -24,6 +24,8 @@
 .imgradius {
     border-radius: 5px;
     width: 555px;
+    max-width: 100%; /*quitar*/
+    height: autho; /*quitar*/
 }
 
 body {
